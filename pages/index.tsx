@@ -4,6 +4,7 @@ import axios from "axios";
 import * as qs from "qs";
 import { CookieTokenList, MyCookie } from "../common/cookies";
 import Cookies from "universal-cookie";
+import { useState } from "react";
 
 export default function Home() {
   const cookieUserId = new MyCookie(
@@ -14,6 +15,10 @@ export default function Home() {
     CookieTokenList.BACKEND_ACCESS_TOKEN,
     new Cookies()
   );
+  const [log1, setLog1] = useState<string | null>(null);
+  const [log2, setLog2] = useState<string | null>(null);
+  const [log3, setLog3] = useState<string | null>(null);
+
   return (
     <>
       <div>
@@ -30,9 +35,16 @@ export default function Home() {
               LIFF Starter!
             </a>
           </h1>
+          <div>
+            <h3>logs</h3>
+            <p>log1 {log1}</p>
+            <p>log2 {log2}</p>
+            <p>log3 {log3}</p>
+          </div>
           <Button
             variant="contained"
             onClick={(e) => {
+              setLog1("test1");
               const Axios = axios.create({
                 baseURL: "https://api.line.me",
                 timeout: 50_000,
@@ -46,6 +58,8 @@ export default function Home() {
                     qs.stringify(params, { arrayFormat: "repeat" }),
                 },
               });
+
+              setLog1("test2");
               Axios.post<any>("/v2/bot/message/push", {
                 to: cookieUserId.getToken() ?? "",
                 messages: [
@@ -53,12 +67,10 @@ export default function Home() {
                     type: "text",
                     text: "Hello, world1",
                   },
-                  {
-                    type: "text",
-                    text: "Hello, world2",
-                  },
                 ],
               });
+
+              setLog3("test3");
             }}
           >
             BotTestMessage

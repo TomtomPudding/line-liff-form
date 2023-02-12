@@ -53,7 +53,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <div>
         <h3>ユーザ情報確認</h3>
         <p>ユーザID {uid}</p>
+        <p>ユーザID session {cookieUserId.getToken()}</p>
         <p>アクセストークン {accessToken}</p>
+        <p>アクセストークン session {cookieToken.getToken()}</p>
       </div>
       <Component {...pageProps} />
     </>
