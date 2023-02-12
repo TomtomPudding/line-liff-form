@@ -1,43 +1,45 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
-import liff, { Liff } from "@line/liff";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [liffObject, setLiffObject] = useState<Liff | null>(null);
-  const [uid, setUid] = useState<string | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [liffObject, setLiffObject] = useState<any | null>(null);
+  const [uid, setUid] = useState<string>("");
+  const [accessToken, setAccessToken] = useState<string>("");
 
   useEffect(() => {
-    liff
-      .init({ liffId: process.env.NEXT_APP_LIFF_ID ?? "" })
-      .then(() => {
-        setLiffObject(liff);
-        if (liff.isLoggedIn()) {
-          // ログインの確認を取れたら
-        }
-      })
-      .catch((err: any) => {
-        console.error({ err });
-      });
-  }, []);
-
-  useEffect(() => {
-    liff.ready.then(() => {
-      if (liff.isLoggedIn()) {
-        const context = liff.getContext();
-        const liffToken = liff.getAccessToken();
-        setUid(context?.userId ?? "");
-        setAccessToken(liffToken);
-      }
+    import("@line/liff").then((liff: any) => {
+      liff
+        .init({ liffId: process.env.NEXT_APP_LIFF_ID ?? "" })
+        .then(() => {
+          setLiffObject(liff);
+          if (liff.isLoggedIn()) {
+            // ログインの確認を取れたら
+          }
+        })
+        .catch((err: any) => {
+          console.error({ err });
+        });
     });
   }, []);
 
-  pageProps.liff = liffObject;
+  useEffect(() => {
+    import("@line/liff").then((liff: any) => {
+      liff.ready.then(() => {
+        if (liff.isLoggedIn()) {
+          const context = liff.getContext();
+          const liffToken = liff.getAccessToken();
+          setUid(context?.userId ?? "");
+          setAccessToken(liffToken ?? "");
+        }
+      });
+    });
+  }, []);
+
   return (
     <>
       <div>
-        <h3>Login Stutus</h3>
+        <h3>ユーザ情報確認</h3>
         <p>ユーザID {uid}</p>
         <p>アクセストークン {accessToken}</p>
       </div>
