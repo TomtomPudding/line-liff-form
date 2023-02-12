@@ -19,6 +19,34 @@ export default function Home() {
   const [log2, setLog2] = useState<string | null>(null);
   const [log3, setLog3] = useState<string | null>(null);
 
+  const handleBotUser = async () => {
+    setLog1("test1");
+    const Axios = axios.create({
+      baseURL: "https://api.line.me",
+      timeout: 50_000,
+      headers: {
+        Authorization:
+          "Bearer " + (process.env.NEXT_APP_LIFF_CHANNEL_ACCESS_TOKEN ?? ""),
+      },
+      paramsSerializer: {
+        serialize: (params) => qs.stringify(params, { arrayFormat: "repeat" }),
+      },
+    });
+
+    setLog1("test2");
+    await Axios.post<any>("/v2/bot/message/push", {
+      to: cookieUserId.getToken() ?? "",
+      messages: [
+        {
+          type: "text",
+          text: "Hello, world1",
+        },
+      ],
+    });
+
+    setLog3("test3");
+  };
+
   return (
     <>
       <div>
@@ -41,38 +69,7 @@ export default function Home() {
             <p>log2 {log2}</p>
             <p>log3 {log3}</p>
           </div>
-          <Button
-            variant="contained"
-            onClick={(e) => {
-              setLog1("test1");
-              const Axios = axios.create({
-                baseURL: "https://api.line.me",
-                timeout: 50_000,
-                headers: {
-                  Authorization:
-                    "Bearer " +
-                    (process.env.NEXT_APP_LIFF_CHANNEL_ACCESS_TOKEN ?? ""),
-                },
-                paramsSerializer: {
-                  serialize: (params) =>
-                    qs.stringify(params, { arrayFormat: "repeat" }),
-                },
-              });
-
-              setLog1("test2");
-              Axios.post<any>("/v2/bot/message/push", {
-                to: cookieUserId.getToken() ?? "",
-                messages: [
-                  {
-                    type: "text",
-                    text: "Hello, world1",
-                  },
-                ],
-              });
-
-              setLog3("test3");
-            }}
-          >
+          <Button variant="contained" onClick={handleBotUser}>
             BotTestMessage
           </Button>
           <Button
