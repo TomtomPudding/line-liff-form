@@ -33,16 +33,28 @@ export default function Home() {
       },
     });
 
-    setLog1("test2");
-    await Axios.post<any>("/v2/bot/message/push", {
-      to: cookieUserId.getToken() ?? "",
-      messages: [
-        {
-          type: "text",
-          text: "Hello, world1",
+    await Axios.post<any>(
+      "/v2/bot/message/push",
+      {
+        // to: cookieUserId.getToken() ?? "",
+        to: "U72c0c2fe56e164cbaa9eb84b0ceadd63",
+        messages: [
+          {
+            type: "text",
+            text: "Hello, world1",
+          },
+        ],
+      },
+      {
+        headers: {
+          "content-type": "application/json",
         },
-      ],
-    });
+      }
+    )
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => setLog2(error.toString()));
 
     setLog3("test3");
   };
