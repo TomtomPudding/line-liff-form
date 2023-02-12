@@ -1,11 +1,21 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
+import { MyCookie, CookieTokenList } from "../common/cookies";
+import Cookies from "universal-cookie";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [liffObject, setLiffObject] = useState<any | null>(null);
   const [uid, setUid] = useState<string>("");
   const [accessToken, setAccessToken] = useState<string>("");
+  const cookieUserId = new MyCookie(
+    CookieTokenList.BACKEND_USER_ID,
+    new Cookies()
+  );
+  const cookieToken = new MyCookie(
+    CookieTokenList.BACKEND_ACCESS_TOKEN,
+    new Cookies()
+  );
 
   useEffect(() => {
     import("@line/liff").then((liff: any) => {
@@ -30,7 +40,9 @@ export default function App({ Component, pageProps }: AppProps) {
           const context = liff.getContext();
           const liffToken = liff.getAccessToken();
           setUid(context?.userId ?? "");
+          cookieUserId.setToken(context?.userId ?? "");
           setAccessToken(liffToken ?? "");
+          cookieToken.setToken(liffToken ?? "");
         }
       });
     });
